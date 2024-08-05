@@ -67,7 +67,7 @@ if (isset($_POST['btn_themnv'])) {
                     </div>
                     <script>
                         setTimeout(function(){
-                            window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=xemdsnv";
+                            window.location.href = ""' . API_URL . '/quanly.php?page=xemdsnv";
                         }, 2000);
                     </script>';
                 } else {
@@ -77,7 +77,7 @@ if (isset($_POST['btn_themnv'])) {
                     </div>
                     <script>
                         setTimeout(function(){
-                            window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=xemdsnv";
+                            window.location.href = ""' . API_URL . '/quanly.php?page=xemdsnv";
                         }, 2000);
                     </script>';
                 }
@@ -92,7 +92,7 @@ if (isset($_POST['btn_themnv'])) {
             </div>
             <script>
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=xemdsnv";
+                    window.location.href = ""' . API_URL . '/quanly.php?page=xemdsnv";
                 }, 2000);
             </script>';
         }

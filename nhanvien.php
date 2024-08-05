@@ -32,9 +32,22 @@
 		
 		<!-- Chart CSS -->
 		<link rel="stylesheet" href="assets/plugins/morris/morris.css">
-		
+
 		<!-- Main CSS -->
         <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="./assets/css/chamcong.css">
+
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+        <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js" integrity="sha256-JOJ7NmVm2chxYZ1KPcAYd2bwVK7NaFj9QKMp7DClews=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+         <!-- script thông báo  -->
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     </head>
 	
     <body>

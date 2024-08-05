@@ -37,7 +37,7 @@ if(isset($_REQUEST['save'])){
             </div>
             <script>
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=bangluong";
+                    window.location.href = "' . API_URL . '/quanly.php?page=bangluong";
                 }, 2000); 
             </script>';
         }

@@ -177,7 +177,7 @@
 
         async function trainModel(images) {
             await initFaceAPI();
-           const labels = [<?php echo json_encode($_SESSION['MaND']); ?>];
+            const labels = [String(<?php echo json_encode($_SESSION['MaND']); ?>)];
             const faceDescriptors = [];
             for (const label of labels) {
                 const descriptors = [];
@@ -220,6 +220,7 @@
             console.log('Data saved successfully:', data);
             // Hiển thị dữ liệu trên trang
             displayDataOnPage(data);    
+            window.location.reload();
         } else {
             console.error('Failed to save data:', response.statusText);
         }

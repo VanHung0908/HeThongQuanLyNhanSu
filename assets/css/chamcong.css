@@ -1,0 +1,81 @@
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#videoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#video {
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#snap {
+    margin-top: 10px;
+    
+}
+
+.captured-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.captured-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.captured-image .date {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+#compareButton {
+    margin-top: 10px;
+
+}
+
+
+ .date.disabled {
+    display: 1;
+}
+ .nut {
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: #FFF;
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+ .nut:hover {
+    background-color: #0bb711;
+}
+
+ .nut.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

@@ -4,8 +4,8 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 // Kết nối tới cơ sở dữ liệu
 $servername = "localhost";
-$username = "LamVanHung";
-$password = "0908";
+$username = "root";
+$password = "";
 $dbname = "qlns";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

@@ -1,66 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Recognition Demo</title>
-    <style>
-        #container {
-            display: flex;
-        }
-        #video {
-            width: 50%;
-            margin-right: 10px;
-        }
-        .captured-image {
-            width: 50%;
-        }
-        .captured-image img {
-            width: 100%;
-        }
-        #snap {
-            margin-top: 10px;
-            margin-left: 20%;
-        }
-        #compareButton {
-            display: none; /* Initially hide the button */
-            position: relative;
-            left: 40%;
-        }
-        .chamcong {
-            display: flex;
-        }
-        .chamcong .nut {
-            background-color: #4CAF50;
-            border: 1px solid #f5f5f5;
-            border-radius: 5px;
-            color: #FFF;
-            padding: 5px;
-            min-width: 120px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        .chamcong .nut.disabled {
-            background-color: #9E9E9E;
-            cursor: not-allowed;
-        }
-        
-    </style>
-</head>
+
 <body>
-    <div id="container">
-        <video id="video" autoplay></video>
-        <div class="captured-image" id="capturedImageContainer"></div>
+<div id="container">
+        <div id="videoContainer">
+            <video id="video" autoplay></video>
+            <button id="snap" class="nut">Chụp ảnh</button>
+        </div>
+        <div class="captured-image">
+            <div id="capturedImageContainer"></div>
+            <span class="date" id="currentDate" style="display:none;">ádasf</span>
+            <button id="compareButton" class="nut" style="display:none;">Chấm công</button>
+        </div>
     </div>
-    <div class="chamcong">
-        <button id="snap" class="nut">Chụp ảnh</button>
-        <button id="compareButton" class="nut">Chấm công</button>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js"
-        integrity="sha256-JOJ7NmVm2chxYZ1KPcAYd2bwVK7NaFj9QKMp7DClews=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+    <div id="map"></div>
     <script>
+        let platform = new H.service.Platform({
+            'apikey': 'XBb6v5AkVX7Min76bJN8OM4HxiPm_uRaG_7N-wVX4FM'
+        });
+        let map;
+        // const targetLocation = { lat:   10.8165592, lng:   106.6865922};
+
+        const targetLocation = { lat:    10.821203, lng:   106.7116815};
+        const checkRadius = 200; 
+        function initMap() {
+            let defaultLayers = platform.createDefaultLayers();
+            map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+                center: { lat: 0, lng: 0 },
+                zoom: 15,
+                pixelRatio: window.devicePixelRatio || 1
+            });
+            let ui = H.ui.UI.createDefault(map, defaultLayers);
+            let mapEvents = new H.mapevents.MapEvents(map);
+            let behavior = new H.mapevents.Behavior(mapEvents);
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) { 
+            const R = 6371e3; // Earth's radius in meters
+            const φ1  = lat1 * Math.PI / 180;// Chuyển đổi vĩ độ 1 sang radian
+            const φ2 = lat2 * Math.PI / 180; 
+            const Δφ = (lat2 - lat1) * Math.PI / 180;// Chênh lệch vĩ độ
+            const Δλ = (lon2 - lon1) * Math.PI / 180;// Chênh lệch kinh độ
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; //  Khoảng cách theo mét
+            //Công thức Haversine (trên bề mặt trái đất)
+        }
+        let currentPosition = { latitude: null, longitude: null };
+        function updatePosition(position) {
+            const { latitude, longitude } = position.coords;
+            console.log(`Vĩ độ: ${latitude}, Kinh độ: ${longitude}`);
+            currentPosition.latitude = latitude;
+            currentPosition.longitude = longitude;
+            map.setCenter({ lat: latitude, lng: longitude });
+
+            let marker = new H.map.Marker({ lat: latitude, lng: longitude });
+            map.addObject(marker);
+
+            // Thêm vòng tròn với bán kính 500m
+            let circle = new H.map.Circle(
+                { lat: latitude, lng: longitude }, // Tọa độ trung tâm
+                checkRadius, // Bán kính tính bằng mét
+                {
+                    style: {
+                        strokeColor: 'rgba(0, 128, 255, 0.5)', // Màu viền vòng tròn
+                        fillColor: 'rgba(0, 128, 255, 0.2)' // Màu nền vòng tròn
+                    }
+                }
+            );
+        map.addObject(circle);
+
+    // Thêm điểm mốc màu đỏ
+            addRedMarker(targetLocation);
+
+            // Kiểm tra nếu vị trí hiện tại nằm trong vùng mốc
+            const distance = getDistance(latitude, longitude, targetLocation.lat, targetLocation.lng);
+            if (distance <= checkRadius) {
+                setButtonsState(false); // Cho phép bấm nút Chấm công
+            } else {
+                setButtonsState(true); // Không cho phép bấm nút Chấm công
+            }
+        }
+
+        function addRedMarker(location) {
+            const redIcon = new H.map.Icon('https://img.icons8.com/ios-filled/50/FF0000/marker.png', { size: { w: 32, h: 32 } });
+            let redMarker = new H.map.Marker(location, { icon: redIcon });
+            map.addObject(redMarker);
+        }
+
+        function handleLocationError(error) {
+            console.error('Error getting location: ', error);
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(updatePosition, handleLocationError, {
+                    enableHighAccuracy: true, // Sử dụng độ chính xác cao hơn
+                    timeout: 5000, // Thời gian timeout
+                    maximumAge: 0 // Không sử dụng vị trí cũ
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+
         const video = document.getElementById('video');
         const snapButton = document.getElementById('snap');
         const capturedImageContainer = document.getElementById('capturedImageContainer');
@@ -139,7 +185,7 @@
                 faceDescriptors.push(new faceapi.LabeledFaceDescriptors(label, float32ArrayDescriptors));
             });
 
-            const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.4);
+            const faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.5);
             const image = await getImageFromDataUrl(imageData);
             const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors();
 
@@ -150,27 +196,33 @@
                     if (bestMatch.label !== 'unknown') {
                         console.log(`Kết quả: Nhận diện khuôn mặt của ${bestMatch.label} với độ chính xác ${bestMatch.distance}`);
                         await addToAttendance(bestMatch.label);
-                        alert('Chấm công thành công.');
-                    } else {
-                        alert('Không nhận diện được khuôn mặt.');
+                        Swal.fire({
+                        icon: 'success',
+                        title: 'Chấm công thành công',
+                        confirmButtonText: 'OK'
+                        });
+                        setButtonsState(false);
+                        compareButton.textContent = 'Chấm công';
+                        return;
                     }
                 }
+                console.log('Khuôn mặt không khớp với dữ liệu đã lưu');
             } else {
-                alert('Không tìm thấy khuôn mặt.');
+                console.log('Không tìm thấy khuôn mặt trong hình ảnh');
             }
-            compareButton.textContent = 'Hoàn tất';
+            Swal.fire({
+            icon: 'error',
+            title: 'Chấm công không thành công',
+            text: 'Khuôn mặt không khớp hoặc không tìm thấy khuôn mặt',
+            confirmButtonText: 'OK'
+            });
             setButtonsState(false);
+            compareButton.textContent = 'Chấm công';
         }
-
         async function getImageFromDataUrl(dataUrl) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const img = new Image();
-                img.onload = function() {
-                    resolve(img);
-                };
-                img.onerror = function() {
-                    reject(new Error('Failed to load image'));
-                };
+                img.onload = () => resolve(img);
                 img.src = dataUrl;
             });
         }
@@ -180,7 +232,9 @@
                 const currentDate = new Date();
                 const currentTime = currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds();
                 const currentDateFormatted = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
-
+                const vido = currentPosition.latitude;
+                const kinhdo = currentPosition.longitude;
+                console.log(vido);
                 const response = await fetch('insertgiolam.php', {
                     method: 'POST',
                     headers: {
@@ -189,7 +243,9 @@
                     body: JSON.stringify({
                         label: label,
                         time: currentTime,
-                        date: currentDateFormatted
+                        date: currentDateFormatted,
+                        vido: vido,
+                        kinhdo: kinhdo
                     })
                 });
                 console.log(response);
@@ -202,8 +258,12 @@
                 console.error('Lỗi:', error);
             }
         }
-
-        window.onload = initCamera;
+        window.addEventListener('DOMContentLoaded', () => {
+                    initFaceAPI();
+                });
+        initCamera();
+        initMap();
+        getLocation();
     </script>
 </body>
 </html>

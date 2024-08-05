@@ -1,9 +1,10 @@
 <?php 
 // DB credentials.
 define('DB_HOST','localhost');
-define('DB_USER','LamVanHung');
-define('DB_PASS','0908');
+define('DB_USER','root');
+define('DB_PASS','');
 define('DB_NAME','qlns');
+define('API_URL', 'http://localhost/QLNS');
 // Establish database connection.
 try
 {

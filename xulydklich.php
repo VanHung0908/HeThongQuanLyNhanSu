@@ -20,7 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $dbh->exec($sql);
  
         // Redirect về trang chính sau khi thêm thành công
-        echo "<script>alert('Đăng ký thành công')</script>";
+        echo "<script>
+        Swal.fire({
+        icon: 'success',
+        title: 'Đăng ký thành công',
+        confirmButtonText: 'OK'
+        });
+        </script>";
     } catch (PDOException $e) {
         // Xử lý ngoại lệ nếu có lỗi xảy ra
         echo "Lỗi: " . $e->getMessage();

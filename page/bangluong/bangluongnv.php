@@ -192,11 +192,21 @@ if (isset($_POST['submit'])) {
         var selectedMonth = document.getElementById("thangupdate").value;
         
         if (parseInt(selectedMonth) < currentMonth) {
-            alert("Tháng cập nhật không được nhỏ hơn tháng hiện tại!");
+            Swal.fire({
+            icon: 'error',
+            title: 'Cập nhật không thành công',
+            text: 'Tháng cập nhật không được nhỏ hơn tháng hiện tại!',
+            confirmButtonText: 'OK'
+            });
             return false; // Ngăn chặn việc submit form nếu thỏa điều kiện
         }
         if (parseInt(selectedMonth) > currentMonth) {
-            alert("Tháng cập nhật không được lớn hơn tháng hiện tại!");
+            Swal.fire({
+            icon: 'error',
+            title: 'Cập nhật không thành công',
+            text: 'Tháng cập nhật không được lớn hơn tháng hiện tại!',
+            confirmButtonText: 'OK'
+            });
             return false; // Ngăn chặn việc submit form nếu thỏa điều kiện
         }
         return true; // Cho phép submit form nếu không có lỗi

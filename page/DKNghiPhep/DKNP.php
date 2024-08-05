@@ -80,7 +80,7 @@
                 Lịch nghỉ phép được thêm thành công!
                 </div>  <script>
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/CNMoi/QLNS/nhanvien.php?page=dangkynghiphep";
+                    window.location.href = "' . API_URL . '/nhanvien.php?page=dangkynghiphep";
                 }, 2000);
             </script>';
         } catch (PDOException $e) {

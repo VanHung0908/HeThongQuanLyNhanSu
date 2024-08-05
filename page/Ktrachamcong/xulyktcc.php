@@ -31,7 +31,7 @@ if(isset($_REQUEST['btnduyet'])){
             </div>
             <script>
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=kiemtrachamcong";
+                    window.location.href = "' . API_URL . '/quanly.php?page=kiemtrachamcong";
                 }, 2000); 
             </script>';
         }
@@ -48,7 +48,7 @@ if (isset($_REQUEST['btnxoa'])) {
     </div>
     <script>
         setTimeout(function(){
-            window.location.href = "http://localhost:8080/CNMoi/QLNS/quanly.php?page=kiemtrachamcong";
+            window.location.href = "' . API_URL . '/quanly.php?page=kiemtrachamcong";
         }, 2000); 
     </script>';
 }

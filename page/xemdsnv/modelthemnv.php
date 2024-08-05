@@ -115,21 +115,36 @@ document.getElementById('formThemNhanVien').addEventListener('submit', function(
 
     // Check for special characters in hodem and ten
     if (specialCharPattern.test(hodem) || specialCharPattern.test(ten)) {
-        alert('Họ đệm và tên không được chứa ký tự đặc biệt.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm nhân viên không thành công',
+            text: 'Họ đệm và tên không được chứa ký tự đặc biệt.',
+            confirmButtonText: 'OK'
+            });
         event.preventDefault();
         return;
     }
 
     // Check if there are leading or trailing spaces in hodem, ten, and sdt
     if (hodem !== document.getElementById('hodem').value || ten !== document.getElementById('ten').value || sdt !== document.getElementById('sdt').value) {
-        alert('Họ đệm, tên, và số điện thoại không được chứa khoảng trắng ở đầu hoặc cuối.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm nhân viên không thành công',
+            text: 'Họ đệm, tên, và số điện thoại không được chứa khoảng trắng ở đầu hoặc cuối.',
+            confirmButtonText: 'OK'
+            });
         event.preventDefault();
         return;
     }
 
     // Check if phone number is exactly 10 digits
     if (!phonePattern.test(sdt)) {
-        alert('Số điện thoại phải là 10 số.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm nhân viên không thành công',
+            text: 'Số điện thoại phải là 10 số.',
+            confirmButtonText: 'OK'
+            });
         event.preventDefault();
         return;
     }
@@ -142,14 +157,24 @@ document.getElementById('formThemNhanVien').addEventListener('submit', function(
         age--;
     }
     if (age < 18) {
-        alert('Nhân viên phải ít nhất 18 tuổi.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm nhân viên không thành công',
+            text: 'Nhân viên phải ít nhất 18 tuổi.',
+            confirmButtonText: 'OK'
+            });
         event.preventDefault();
         return;
     }
 
     // Check if NBD is not after today
     if (NBD > today) {
-        alert('Ngày bắt đầu không được sau ngày hiện tại.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm nhân viên không thành công',
+            text: 'Ngày bắt đầu không được sau ngày hiện tại.',
+            confirmButtonText: 'OK'
+            });
         event.preventDefault();
         return;
     }

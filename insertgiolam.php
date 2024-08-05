@@ -6,6 +6,8 @@ $data = json_decode(file_get_contents("php://input"));
 $label = $data->label;
 $time = $data->time;
 $date = $data->date;
+$vido = $data->vido;
+$kinhdo = $data->kinhdo;
 
 // Kiểm tra xem đã có bản ghi check-in cho người dùng với nhãn label này trong ngày hôm nay hay chưa
 $sqlCheckIn = "SELECT * FROM bangchamcong WHERE MaND = :label AND Ngay = :date AND GioCheckout='00:00:00'";
@@ -30,11 +32,13 @@ if ($checkInRecord) {
     }
 } else {
     // Nếu chưa có bản ghi check-in, thực hiện insert bản ghi mới
-    $sqlInsert = "INSERT INTO bangchamcong (MaND, GioCheckin, Ngay, TrangThai) VALUES (:label, :time, :date, 'Chờ duyệt')";
+    $sqlInsert = "INSERT INTO bangchamcong (MaND, GioCheckin, Ngay, TrangThai,vido,kinhdo) VALUES (:label, :time, :date, 'Chờ duyệt',:vido,:kinhdo)";
     $stmtInsert = $dbh->prepare($sqlInsert);
     $stmtInsert->bindParam(':label', $label);
     $stmtInsert->bindParam(':time', $time);
     $stmtInsert->bindParam(':date', $date);
+    $stmtInsert->bindParam(':vido', $vido);
+    $stmtInsert->bindParam(':kinhdo', $kinhdo);
     
     if ($stmtInsert->execute()) {
         echo "Dữ liệu đã được thêm vào bảng chấm công.";
