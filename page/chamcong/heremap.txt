@@ -1,59 +1,63 @@
 
-</head>
 <body>
-    <div id="container">
+<div id="container">
         <div id="videoContainer">
             <video id="video" autoplay></video>
             <button id="snap" class="nut">Chụp ảnh</button>
         </div>
         <div class="captured-image">
             <div id="capturedImageContainer"></div>
+            <span class="date" id="currentDate" style="display:none;">ádasf</span>
             <button id="compareButton" class="nut" style="display:none;">Chấm công</button>
         </div>
     </div>
     <div id="map"></div>
     <script>
-        // Khởi tạo bản đồ Goong
-        goongjs.accessToken = 'EBn0P3DAihTj0YkWXwc6CAqP5C5ScF7tNOwE6LfG';
-        let map = new goongjs.Map({
-            container: 'map',
-            style: 'https://tiles.goong.io/assets/goong_map_web.json',
-            center: [106.7116815, 10.821203], // Vị trí mặc định của bản đồ
-            zoom: 15
+        let platform = new H.service.Platform({
+            'apikey': 'EIcbJM6qeJubHPj-ftezwjsoxipDd2K88FSUZnibAqA'
         });
+        let map;
+        // const targetLocation = { lat:   10.8165592, lng:   106.6865922};
+         const targetLocation = { lat:    10.821203, lng:   106.7116815};
+        //  let targetLocation = { lat: null, lng: null };
+         const checkRadius = 200; 
+        function initMap() {
+            let defaultLayers = platform.createDefaultLayers();
+            map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+                center: { lat: 0, lng: 0 },
+                zoom: 15,
+                pixelRatio: window.devicePixelRatio || 1
+            });
+            // Tạo giao diện người dùng mặc định cho bản đồ
+            let ui = H.ui.UI.createDefault(map, defaultLayers);
 
-        let targetLocation = { lat: null, lng: null };
-        const checkRadius = 200; // Bán kính kiểm tra, tính bằng mét
+            // Tạo sự kiện bản đồ để xử lý các hành động của người dùng
+            let mapEvents = new H.mapevents.MapEvents(map);
 
-        async function geocodeAddress(address) {
-            const apiKey = 'MiyG7vGc63MqSJRZ1uhGkzDRiJdZdvdGIhQCTasy';
-            const url = `https://rsapi.goong.io/Geocode?address=${encodeURIComponent(address)}&api_key=${apiKey}`;
+            // Tạo hành vi cho các sự kiện bản đồ
+            let behavior = new H.mapevents.Behavior(mapEvents);
+        }
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.results && data.results.length > 0) {
-                    const location = data.results[0].geometry.location;
-                    targetLocation = { lat: location.lat, lng: location.lng };
+        function geocodeAddress(address) {
+            const geocoder = platform.getGeocodingService();
+            geocoder.geocode({ searchText: address }, (result) => {
+                if (result && result.response && result.response.view && result.response.view.length > 0) {
+                    const location = result.response.view[0].result[0].location.displayPosition;
+                    targetLocation = { lat: location.latitude, lng: location.longitude };
                     console.log(`Địa chỉ được chuyển đổi thành tọa độ: ${targetLocation.lat}, ${targetLocation.lng}`);
                     
                     // Cập nhật bản đồ với điểm mốc mới
-                    map.setCenter([targetLocation.lng, targetLocation.lat]);
+                    map.setCenter(targetLocation);
                     addRedMarker(targetLocation);
-
-                    // Khi có targetLocation, gọi updatePosition
-                    getLocation();
                 } else {
                     console.error('Không tìm thấy kết quả');
                 }
-            } catch (error) {
+            }, (error) => {
                 console.error('Lỗi khi geocode địa chỉ:', error);
-            }
+            });
         }
 
-        async function getDistance(lat1, lon1, lat2, lon2) { 
-            console.log(`Lat1: ${lat1}, Lon1: ${lon1}`);
-            console.log(`Lat2: ${lat2}, Lon2: ${lon2}`);
+        function getDistance(lat1, lon1, lat2, lon2) { 
             const R = 6371e3; // Earth's radius in meters
             const φ1  = lat1 * Math.PI / 180;// Chuyển đổi vĩ độ 1 sang radian
             const φ2 = lat2 * Math.PI / 180; 
@@ -69,39 +73,35 @@
             return R * c; //  Khoảng cách theo mét
             //Công thức Haversine (trên bề mặt trái đất)
         }
-        console.log(targetLocation.lat);
-        console.log(targetLocation.lng);
         let currentPosition = { latitude: null, longitude: null };
-        async function updatePosition(position) {
+        function updatePosition(position) {
             const { latitude, longitude } = position.coords;
             console.log(`Vĩ độ: ${latitude}, Kinh độ: ${longitude}`);
             currentPosition.latitude = latitude;
             currentPosition.longitude = longitude;
-            // Cập nhật vị trí hiện tại trên bản đồ
-            map.setCenter([longitude, latitude]);
+            map.setCenter({ lat: latitude, lng: longitude });
 
-            // Thêm marker cho vị trí hiện tại (màu xanh)
-            new goongjs.Marker({ color: 'blue' })
-                .setLngLat([longitude, latitude])
-                .setPopup(new goongjs.Popup().setHTML('<div style="color: blue;">Vị trí hiện tại</div>'))
-                .addTo(map);
-            
-            // Xóa lớp vòng tròn cũ nếu có
-            if (map.getSource('circleSource')) {
-                map.removeLayer('circleLayer');
-                map.removeSource('circleSource');
-            }
+            let marker = new H.map.Marker({ lat: latitude, lng: longitude });
+            map.addObject(marker);
 
-            // Thêm vòng tròn mới vào bản đồ
-            addCircleLayer();
-       
-            // Thêm điểm mốc màu đỏ
+            // Thêm vòng tròn với bán kính 500m
+            let circle = new H.map.Circle(
+                { lat: latitude, lng: longitude }, // Tọa độ trung tâm
+                checkRadius, // Bán kính tính bằng mét
+                {
+                    style: {
+                        strokeColor: 'rgba(0, 128, 255, 0.5)', // Màu viền vòng tròn
+                        fillColor: 'rgba(0, 128, 255, 0.2)' // Màu nền vòng tròn
+                    }
+                }
+            );
+        map.addObject(circle);
+
+    // Thêm điểm mốc màu đỏ
             addRedMarker(targetLocation);
-            console.log(targetLocation.lat);
-            console.log(targetLocation.lng);
-            // Kiểm tra nếu điểm mốc nằm trong vùng vòng tròn xanh
-            const distance = await getDistance(currentPosition.latitude, currentPosition.longitude, targetLocation.lat, targetLocation.lng);
-            console.log(`Khoảng cách giữa vị trí hiện tại và điểm mốc: ${distance} mét`);
+
+            // Kiểm tra nếu vị trí hiện tại nằm trong vùng mốc
+            const distance = getDistance(latitude, longitude, targetLocation.lat, targetLocation.lng);
             if (distance <= checkRadius) {
                 setButtonsState(false); // Cho phép bấm nút Chấm công
             } else {
@@ -109,33 +109,10 @@
             }
         }
 
-        async function addCircleLayer() {
-            // Tạo dữ liệu GeoJSON cho vòng tròn bằng turf.js
-            const circle = turf.circle([currentPosition.longitude,currentPosition.latitude], checkRadius , {
-                steps: 64,
-               units: 'meters'
-            });
-            map.addSource('circleSource', {
-                type: 'geojson',
-                data: circle
-            });
-            // Thêm lớp vòng tròn vào bản đồ
-            map.addLayer({
-                id: 'circleLayer',
-                type: 'fill',
-                source: 'circleSource',
-                paint: {
-                    'fill-color': 'rgba(0, 0, 255, 0.2)', // Màu nội dung vòng tròn
-                    'fill-outline-color': 'rgba(0, 0, 255, 0.5)' // Màu viền vòng tròn
-                }
-            });
-        }
-
         function addRedMarker(location) {
-            new goongjs.Marker({ color: 'red' })
-                .setLngLat([location.lng, location.lat])
-                .setPopup(new goongjs.Popup().setHTML('<div style="color: red;">Điểm mốc</div>'))
-                .addTo(map);
+            const redIcon = new H.map.Icon('https://img.icons8.com/ios-filled/50/FF0000/marker.png', { size: { w: 32, h: 32 } });
+            let redMarker = new H.map.Marker(location, { icon: redIcon });
+            map.addObject(redMarker);
         }
 
         function handleLocationError(error) {
@@ -176,8 +153,8 @@
             canvas.height = video.videoHeight;
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImage = canvas.toDataURL('image/png');
-            capturedImageContainer.innerHTML = `<img src="${capturedImage}" alt="Captured Image">`;
+            capturedImage = canvas.toDataURL('image/jpeg');
+            displayCapturedImage(capturedImage);
             compareButton.style.display = 'block';
         }
 
@@ -308,18 +285,10 @@
         window.addEventListener('DOMContentLoaded', () => {
                     initFaceAPI();
                 });
-                
-        // Khởi động camera khi trang được tải
         initCamera();
-
-        // Gọi hàm geocodeAddress khi trang được tải
-        geocodeAddress('520 D. Thị Mười, Hiệp Thành, Quận 12, Hồ Chí Minh, Việt Nam');
-        // geocodeAddress('114 trần Bình trọng p1 quận gò vấp');
-
-        function setButtonsState(disabled) {
-            compareButton.disabled = disabled;
-            compareButton.classList.toggle('disabled', disabled);
-        }
+        initMap();
+        getLocation();
+        geocodeAddress('114 Trần Bình Trọng, Phường 1, Quận Gò Vấp, Thành Phố Hồ Chí Minh');
     </script>
 </body>
 </html>

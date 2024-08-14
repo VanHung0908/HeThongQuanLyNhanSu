@@ -40,10 +40,15 @@
         <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js" integrity="sha256-JOJ7NmVm2chxYZ1KPcAYd2bwVK7NaFj9QKMp7DClews=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
-       <!-- script thông báo  -->
+       <script src="https://geocode.search.hereapi.com/v1/geocode?q=Invalidenstr+117+Berlin&apiKey=EIcbJM6qeJubHPj-ftezwjsoxipDd2K88FSUZnibAqA"></script>
+        <!-- script thông báo  -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<!-- goong map -->
+<script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css" rel="stylesheet" />
+        <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+        <script src="https://tiles.goong.io/assets/goong_map_web.js"></script>
     </head>
 	
     <body>

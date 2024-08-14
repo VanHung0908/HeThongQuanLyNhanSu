@@ -1,2 +1,6 @@
 API key:XBb6v5AkVX7Min76bJN8OM4HxiPm_uRaG_7N-wVX4FM
 APP ID:EyhWN8SclZbvy9vNbIUr
+/// 
+https://geocode.search.hereapi.com/v1/geocode?q=Invalidenstr+117+Berlin&apiKey=EIcbJM6qeJubHPj-ftezwjsoxipDd2K88FSUZnibAqA
+APP ID: lxV2O3GMYwznpMSMjLOv
+API key: EIcbJM6qeJubHPj-ftezwjsoxipDd2K88FSUZnibAqA

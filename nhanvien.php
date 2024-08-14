@@ -17,10 +17,7 @@
         <meta name="author" content="Dreamguys - Bootstrap Admin Template">
         <meta name="robots" content="noindex, nofollow">
         <title>NhanVien - HRMS admin template</title>
-          <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-        <script src="../assets/js/jquery-3.2.1.min.js"></script>
-        <script src="../assets/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="../assets/css/dangkylichlam.css">
+
 		<!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
 		<!-- Bootstrap CSS -->
@@ -47,6 +44,11 @@
          <!-- script thông báo  -->
          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+         <!-- goong map -->
+        <script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css" rel="stylesheet" />
+        <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+        <script src="https://tiles.goong.io/assets/goong_map_web.js"></script>
 
     </head>
 	

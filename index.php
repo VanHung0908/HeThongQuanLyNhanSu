@@ -16,10 +16,7 @@
         <meta name="author" content="Dreamguys - Bootstrap Admin Template">
         <meta name="robots" content="noindex, nofollow">
         <title>Dashboard - HRMS admin template</title>
-          <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-          <script src="../assets/js/jquery-3.2.1.min.js"></script>
-        <script src="../assets/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="../assets/css/dangkylichlam.css">
+      
 		<!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
 		<!-- Bootstrap CSS -->
