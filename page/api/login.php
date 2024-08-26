@@ -2,23 +2,18 @@
 session_start();
 header('Content-Type: application/json');
 
-// Include database configuration
 include_once("../../includes/config.php");
 
-// Initialize response array
 $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get POST data
     $username = isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '';
     $password = isset($_POST['password']) ? htmlspecialchars($_POST['password']) : '';
-    
+
     if (!empty($username) && !empty($password)) {
-        // Hash the password
         $password = MD5($password);
         
-        // Prepare SQL statement
-        $sql = "SELECT TenDangNhap, MatKhau FROM TaiKhoan WHERE TenDangNhap=:username";
+        $sql = "SELECT TenDangNhap, MatKhau, MaND FROM TaiKhoan WHERE TenDangNhap=:username";
         $query = $dbh->prepare($sql);
         $query->bindParam(':username', $username, PDO::PARAM_STR);
         $query->execute();
@@ -28,15 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($query->rowCount() > 0) {
             foreach ($results as $row) {
                 $hashpass = $row->MatKhau;
+                $MaND = $row->MaND; 
             }
-            
-            // Verify password
             if ($password === $hashpass) {
                 $_SESSION['userlogin'] = $username;
-                $_SESSION['pass'] = $password;
+                $_SESSION['MaND'] = $MaND; // Lưu MaND vào session
                 $response['status'] = 'success';
                 $response['message'] = 'Login successful';
-                $response['redirect'] = 'index.php'; // Redirect URL
+                $response['redirect'] = 'index.php';
+                $response['MaND'] = $MaND;
             } else {
                 $response['status'] = 'error';
                 $response['message'] = 'Username hoặc Password không đúng';
@@ -54,6 +49,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response['message'] = 'Invalid request method';
 }
 
-// Output response as JSON
 echo json_encode($response);
 ?>
